@@ -101,6 +101,16 @@ int soma_elementos(arv r){
     return r->info + soma_elementos(r->dir) + conta_elementos(r->esq);  
 }
 
+int soma_maiores(arv r, int k){
+    if(vazia(r))
+        return 0;
+    
+    if(r->info > k)
+        return r->info + soma_maiores(r->dir, k) + soma_maiores(r->esq, k);  
+    
+    return soma_maiores(r->esq, k) + soma_maiores(r->dir, k);
+}
+
 int altura(arv r){
     if(vazia(r))
         return 0;
@@ -170,6 +180,41 @@ arv libera_Arvbin(arv r){
     r->dir = libera_Arvbin (r->dir);
 }
 
+int conta_no_interno(arv r){
+    if (vazia(r)) return 0;
+
+    if(r->dir != NULL || r->esq != NULL)
+        return 1 + conta_no_interno(r->esq) + conta_no_interno(r->dir);
+    
+    return conta_no_interno(r->esq) + conta_no_interno(r->dir);
+}
+
+int conta_no_filho_unico(arv r){
+    if (vazia(r)) return 0;
+
+    if((r->dir != NULL && r->esq == NULL) || (r->dir == NULL && r->esq != NULL))
+        return 1 + conta_no_filho_unico(r->esq) + conta_no_filho_unico(r->dir);
+    
+    return conta_no_filho_unico(r->esq) + conta_no_filho_unico(r->dir);
+}
+
+//acha o menor valor maior q k
+int maior_menor(arv root, int k) {
+    if (root == NULL) {
+        return -1;  // Caso base: se a árvore está vazia, retorna -1
+    }
+
+    // Se o valor do nó atual for maior que k
+    if (root->info > k) {
+        // Verifica na subárvore esquerda se existe um valor menor que root->info, mas maior que k
+        int esqResult = maior_menor(root->esq, k);
+        return (esqResult != -1) ? esqResult : root->info;
+    } else {
+        // Se o valor do nó atual não é maior que k, verifica a subárvore direita
+        return maior_menor(root->dir, k);
+    }
+}
+
 arv liberar_outro(arv r){
     if(!vazia(r)){
         if(r->esq)
@@ -194,7 +239,7 @@ int main(){
     r = insere(r, 22);
     r = insere(r, 15);
 
-    imprime_chaves(r);
+    //imprime_chaves(r);
 
     //int bus = busca(r, 5);
     //printf("\n%d", bus);
@@ -202,8 +247,20 @@ int main(){
 
     //r = remocao(r, 7);
 
+    //printf("%d ", conta_no_interno(r));
+    //printf("%d", soma_maiores(r, 1));
+    //printf("%d", conta_no_filho_unico(r));
+    printf("%d", maior_menor(r,12));
+
+
     r = libera_Arvbin(r);
     print_inOrden(r);
 
     return 0;
 }
+
+/*
+for
+    if
+        for
+*/
