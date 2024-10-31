@@ -215,6 +215,44 @@ int maior_menor(arv root, int k) {
     }
 }
 
+int soma_intervalo(arv r, int a, int b){
+    if(vazia(r)) return 0;
+
+    if(r->info > b)
+        return soma_intervalo(r->esq, a, b);
+
+    if(r->info < a)
+        return soma_intervalo(r->dir, a, b);
+
+    return r->info + soma_intervalo(r->dir, a, b) + soma_intervalo(r->esq, a, b);
+}
+
+// void intervalo(arv r, int a, int b){
+//     if(vazia(r)) return 0;
+
+//     if(r->info >= a && r->info <= b){
+//         intervalo(r->esq, a, b);
+//         printf("%d ", r->info);
+//         intervalo(r->dir, a, b);
+//     }
+//     intervalo(r->esq, a, b);
+//     intervalo(r->dir, a, b);
+// }
+
+int similares(arv r1, arv r2) {
+    // Se ambas são vazias, são similares
+    if (vazia(r1) && vazia(r2)) 
+        return 1;
+    
+    // Se uma é vazia e a outra não, não são similares
+    if (vazia(r1) || vazia(r2)) 
+        return 0;
+
+    // Verificar recursivamente as subárvores esquerda e direita
+    return similares(r1->esq, r2->esq) && similares(r1->dir, r2->dir);
+}
+
+
 arv liberar_outro(arv r){
     if(!vazia(r)){
         if(r->esq)
@@ -230,6 +268,7 @@ arv liberar_outro(arv r){
 
 int main(){
     arv r = NULL;
+    arv r2 = NULL;
 
     r = insere(r, 11);
     r = insere(r, 5);
@@ -238,6 +277,14 @@ int main(){
     r = insere(r, 14);
     r = insere(r, 22);
     r = insere(r, 15);
+
+    r2 = insere(r2, 11);
+    r2 = insere(r2, 5);
+    r2 = insere(r2, 2);
+    r2 = insere(r2, 8);
+    r2 = insere(r2, 14);
+    r2 = insere(r2, 22);
+    r2 = insere(r2, 15);
 
     //imprime_chaves(r);
 
@@ -250,7 +297,7 @@ int main(){
     //printf("%d ", conta_no_interno(r));
     //printf("%d", soma_maiores(r, 1));
     //printf("%d", conta_no_filho_unico(r));
-    printf("%d", maior_menor(r,12));
+    printf("%d", similares(r, r2));
 
 
     r = libera_Arvbin(r);
@@ -258,9 +305,3 @@ int main(){
 
     return 0;
 }
-
-/*
-for
-    if
-        for
-*/
